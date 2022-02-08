@@ -1,38 +1,17 @@
 #include <iostream>
 #include <vector>
 #include <array>
-
-
-template<class T, std::size_t N>
-std::ostream &operator<<(std::ostream &os, const std::array<T, N> &array) {
-    for (const T &value: array) {
-        os << value << ' ';
-    }
-    return os;
-};
-
-struct Item {
-    int ID;
-    std::string Name;
-    std::array<int, 2> beats;
-    std::array<int, 2> loses;
-
-    friend std::ostream &operator<<(std::ostream &os, const Item &item) {
-        os << "ID:" << item.ID << "Name: " << item.Name << " Beats: " << item.beats << " Loses: " << item.loses;
-        return os;
-    }
-};
-
+#include "item.h"
+#include "game.h"
+//#include <mysql/mysql.h>
+//#include "mysql_connection.h"
+//#include <cppconn/driver.h>
+//#include <cppconn/exception.h>
+//#include <cppconn/resultset.h>
+//#include <cppconn/statement.h>
 
 std::vector<Item> getGameItems() {
     std::vector<Item> gameItems = {
-//            {"rock",     {"scissors", "lizard"}, {"paper",    "Spock"}},
-//            {"paper",    {"rock",     "Spock"},  {"scissors", "lizard"}},
-//            {"scissors", {"paper",    "lizard"}, {"rock",     "Spock"}},
-//            {"lizard",   {"paper",    "Spock"},  {"rock",     "scissors"}},
-//            {"Spock",    {"scissors", "rock"},   {"paper",    "lizard"}}
-//    };
-
             {1, "rock",     {3, 4}, {2, 5}},
             {2, "paper",    {1, 5}, {3, 4}},
             {3, "scissors", {2, 4}, {1, 5}},
@@ -43,64 +22,119 @@ std::vector<Item> getGameItems() {
     return gameItems;
 }
 
-void finish_game() {
-    std::cout << "Thank you for playing.";
-}
-
-void start_game() {
-    std::string anotherGame;
-    int userPick = 0;
-    std::cout << "Select one:" << std::endl;
-    std::vector<Item> gameItems = getGameItems();
-    std::vector<Item>::size_type gameItemsSize = gameItems.size();
-    for (int i = 0; i < gameItemsSize; i++) {
-        std::cout << i + 1 << ": " << gameItems[i].Name << std::endl;
-    }
-
-    std::cin >> userPick;
-    int gameItemsCount = static_cast<int>(gameItemsSize);
-    int cpuPick = (rand() % gameItemsCount) + 1;
-    if (userPick > gameItemsCount || userPick < 1) {
-        std::cout << "Please make a valid choice between 1 and 5." << std::endl;
-    }
-    if (userPick == cpuPick) std::cout << "It's a draw" << std::endl;
-    Item userPickItem = gameItems[userPick - 1];
-    std::cout << "You picked: " << userPickItem.Name << std::endl;
-    Item cpuPickItem = gameItems[cpuPick - 1];
-    std::cout << "The computer picked: " << cpuPickItem.Name << std::endl;
-
-//    userPickItem.beats;
-    bool userIsWinner = false;
-    for (int ItemID: userPickItem.beats) {
-        if (cpuPickItem.ID == ItemID) {
-            userIsWinner = true;
-            break;
-        }
-    }
-//    std::array::iterator *cpuPickItemNameResult;
-//    *cpuPickItemNameResult = std::find(std::begin(userPickItem.beats), std::end(userPickItem.beats), cpuPickItem.Name);
-
-//    if (userPick == 1 && cpuPick == 2) std::cout << "You lose" << std::endl;
-//    if (userPick == 1 && cpuPick == 3) std::cout << "You win" << std::endl;
-//    if (userPick == 2 && cpuPick == 1) std::cout << "You win" << std::endl;
-//    if (userPick == 2 && cpuPick == 3) std::cout << "You lose" << std::endl;
-//    if (userPick == 3 && cpuPick == 1) std::cout << "You lose" << std::endl;
-//    if (userPick == 3 && cpuPick == 2) std::cout << "You win" << std::endl;
-
-    if (userIsWinner) { std::cout << "You Win!" << std::endl; }
-    else { std::cout << "You Lose!" << std::endl; }
-
-    std::cout << "Do you want to play another game? y/n" << std::endl;
-    std::cin >> anotherGame;
-    if (anotherGame == "y" || anotherGame == "yes") start_game();
-    if (anotherGame == "n" || anotherGame == "no") finish_game();
-
-}
-
+//int testdb();
 
 int main() {
-    start_game();
-//    Item item = Item{"rock", {"scissors", "lizard"}, {"paper", "Spock"} };
-//    std::cout << item;
+
+    Game game = Game(getGameItems());
+
+    game.start();
+
     return 0;
 }
+//
+//struct connection_details
+//{
+//    const char *server, *user, *password, *database;
+//};
+//
+//MYSQL* mysql_connection_setup(struct connection_details mysql_details){
+//    MYSQL* connection = mysql_init(NULL); // mysql instance
+//
+////connect database
+//    if(!mysql_real_connect(connection, mysql_details.server, mysql_details.user, mysql_details.password, mysql_details.database, 0, NULL, 0)){
+//        std::cout << "Connection Error: " << mysql_error(connection) << std::endl;
+//        exit(1);
+//    }
+//
+//    return connection;
+//}
+//
+//
+//MYSQL_RES* mysql_perform_query(MYSQL *connection, const char *sql_query){
+//    //send query to db
+//    if(mysql_query(connection, sql_query)){
+//        std::cout << "MySQL Query Error: " << mysql_error(connection) << std::endl;
+//        exit(1);
+//    }
+//
+//    return mysql_use_result(connection);
+//}
+//
+//int test_db()
+//{
+//    MYSQL *con;	// the connection
+//    MYSQL_RES *res;	// the results
+//    MYSQL_ROW row;	// the result rows (array)
+//
+//    struct connection_details mysqlD;
+//    mysqlD.server = "localhost";  // where the mysql database is
+//    mysqlD.user = "username"; // user
+//    mysqlD.password = "password"; // the password for the database
+//    mysqlD.database = "mydatabase";	// the databse
+//
+//    // connect to the mysql database
+//    con = mysql_connection_setup(mysqlD);
+//
+//    // get the results from executing commands
+//    res = mysql_perform_query(con, "select * from tblUsers;");
+//
+//    std::cout << ("Database Output:\n") << std::endl;
+//
+//    while ((row = mysql_fetch_row(res)) != NULL){
+//        // the below row[] parameters may change depending on the size of the table and your objective
+//        std::cout << row[0] << " | " << row[1] << " | " << row[2] << " | " << row[3] << " | " << row[4] << std::endl << std::endl;
+//    }
+//
+//    // clean up the database result
+//    mysql_free_result(res);
+//
+//    // close database connection
+//    mysql_close(con);
+//
+//    return 0;
+//}
+//
+//int testdb()
+//{
+//    std::cout << std::endl;
+//    std::cout << "Running 'SELECT 'Hello World!' << AS _message'..." << std::endl;
+//
+//    try {
+//        sql::Driver *driver;
+//        sql::Connection *con;
+//        sql::Statement *stmt;
+//        sql::ResultSet *res;
+//
+//        /* Create a connection */
+//        driver = get_driver_instance();
+//        con = driver->connect("tcp://127.0.0.1:3306", "root", "admin");
+//        /* Connect to the MySQL test database */
+//        con->setSchema("test");
+//
+//        stmt = con->createStatement();
+//        res = stmt->executeQuery("SELECT 'Hello World!' AS _message");
+//        while (res->next()) {
+//            std::cout << "\t... MySQL replies: ";
+//            /* Access column data by alias or column name */
+//            std::cout << res->getString("_message") << std::endl;
+//            std::cout << "\t... MySQL says it again: ";
+//            /* Access column data by numeric offset, 1 is the first column */
+//            std::cout << res->getString(1) << std::endl;
+//        }
+//        delete res;
+//        delete stmt;
+//        delete con;
+//
+//    } catch (sql::SQLException &e) {
+//        std::cout << "# ERR: SQLException in " << __FILE__;
+//        std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+//        std::cout << "# ERR: " << e.what();
+//        std::cout << " (MySQL error code: " << e.getErrorCode();
+//        std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+//    }
+//
+//    std::cout << std::endl;
+//
+//    return EXIT_SUCCESS;
+//}

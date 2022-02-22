@@ -6,20 +6,45 @@
 #include <sstream>
 #include "date.h"
 #include "logtofile.h"
-#include <xdevapi.h>
 
-Game::Game(std::vector<Item> gameItems) {
-    this->gameItems = gameItems;
+void Game::setGameItems() {
+
+    if(gameMode == 2){
+        gameItems = {
+                {1, "rock",     {3, 4}, {2, 5}},
+                {2, "paper",    {1, 5}, {3, 4}},
+                {3, "scissors", {2, 4}, {1, 5}},
+                {4, "lizard",   {2, 5}, {1, 3}},
+                {5, "Spock",    {3, 1}, {2, 4}}
+        };
+    }
+//    TODO: add third case for invalid user input
+    else {
+        gameItems = {
+                {1, "rock",     {3}, {2}},
+                {2, "paper",    {1}, {3}},
+                {3, "scissors", {2}, {1}},
+        };
+
+    }
+
 }
 
-void Game::start() {
-    GameSession gameSession = GameSession();
-//    auto t = std::time(nullptr);
-//    auto tm = *std::localtime(&t);
-    gameSession.started = date::format("%d-%m-%Y %H:%M:%S", std::chrono::system_clock::now());
-//            std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
-    std::cout << gameSession.started << std::endl;
+void Game::selectGameMode(){
+    std::cout << "Select game mode:" << std::endl
+              <<"1 for Rock/paper/scissors or " << std::endl
+              <<"2 for Rock/paper/scissors/lizard/Spock" << std::endl;
+    std::cin >> gameMode;
+    setGameItems();
+    startGameSession();
+};
 
+void Game::startGameSession() {
+    GameSession gameSession = GameSession();
+
+    gameSession.started = date::format("%d-%m-%Y %H:%M:%S", std::chrono::system_clock::now());
+
+    std::cout << gameSession.started << std::endl;
 
     int userPick = 0;
     std::cout << "Select one:" << std::endl;
@@ -73,7 +98,6 @@ void Game::start() {
     std::string gameSessionString = gameSession.toString();
 
     write_log_file(gameSessionString);
-//    std::cout << gameSession << std::endl;
 
     askForAnotherGame();
 
@@ -83,11 +107,11 @@ void Game::askForAnotherGame() {
     std::string anotherGame;
     std::cout << "Do you want to play another game? y/n" << std::endl;
     std::cin >> anotherGame;
-    if (anotherGame == "y" || anotherGame == "yes") start();
-    if (anotherGame == "n" || anotherGame == "no") finish();
+    if (anotherGame == "y" || anotherGame == "yes") selectGameMode();
+    if (anotherGame == "n" || anotherGame == "no") finishGameSession();
 }
 
-void Game::finish() {
+void Game::finishGameSession() {
     std::cout << "Thank you for playing.";
 }
 

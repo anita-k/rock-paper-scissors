@@ -6,15 +6,20 @@
 #include "item.h"
 
 class Game {
+private:
     std::vector<Item> gameItems;
-public :
-    Game(std::vector<Item> gameItems);
+public:
+    int gameMode;
 
-    void start();
+    void selectGameMode();
+
+    void setGameItems();
+
+    void startGameSession();
 
     void askForAnotherGame();
 
-    void finish();
+    void finishGameSession();
 };
 
 

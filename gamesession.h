@@ -25,6 +25,4 @@ public:
 
 
 
-
-
 #endif //ROCKPAPERSCISSORS_GAMESESSION_H

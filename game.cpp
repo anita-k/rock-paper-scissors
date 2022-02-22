@@ -6,6 +6,7 @@
 #include <sstream>
 #include "date.h"
 #include "logtofile.h"
+#include <xdevapi.h>
 
 Game::Game(std::vector<Item> gameItems) {
     this->gameItems = gameItems;
@@ -32,7 +33,7 @@ void Game::start() {
     int gameItemsCount = static_cast<int>(gameItemsSize);
     int cpuPick = (rand() % gameItemsCount) + 1;
     if (userPick > gameItemsCount || userPick < 1) {
-        std::cout << "Please make a valid choice between 1 and 5." << std::endl;
+        std::cout << "Please make a valid choice." << std::endl;
     }
     Item userPickItem = gameItems[userPick - 1];
     std::cout << "You picked: " << userPickItem.Name << std::endl;
@@ -89,3 +90,4 @@ void Game::askForAnotherGame() {
 void Game::finish() {
     std::cout << "Thank you for playing.";
 }
+

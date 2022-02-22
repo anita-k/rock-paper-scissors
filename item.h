@@ -4,9 +4,9 @@
 #include <iostream>
 #include <array>
 
-template<class T, std::size_t N>
-std::ostream &operator<<(std::ostream &os, const std::array<T, N> &array) {
-    for (const T &value: array) {
+template<class T>
+std::ostream &operator<<(std::ostream &os, const std::vector<T> &vector) {
+    for (const T &value: vector) {
         os << value << ' ';
     }
     return os;
@@ -15,8 +15,8 @@ std::ostream &operator<<(std::ostream &os, const std::array<T, N> &array) {
 struct Item {
     int ID;
     std::string Name;
-    std::array<int, 2> beats;
-    std::array<int, 2> loses;
+    std::vector<int> beats;
+    std::vector<int> loses;
 
     friend std::ostream &operator<<(std::ostream &os, const Item &item) {
         os << "ID:" << item.ID << "Name: " << item.Name << " Beats: " << item.beats << " Loses: " << item.loses;
